@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import RegisterForm from "../components/RegisterForm";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -15,9 +16,10 @@ const Register = () => {
         email,
         password,
       });
-      console.log("REGISTER USER ====> ", res);
+      toast.success("Signup Success!");
     } catch (err) {
       console.log(err);
+      if (err.response.status === 400) toast.error(err.response.data);
     }
   };
 
