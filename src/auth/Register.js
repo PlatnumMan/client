@@ -1,9 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import RegisterForm from "../components/RegisterForm";
 import toast from "react-hot-toast";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,6 +19,7 @@ const Register = () => {
         password,
       });
       toast.success("Signup Success!");
+      navigate("/login");
     } catch (err) {
       console.log(err);
       if (err.response.status === 400) toast.error(err.response.data);
