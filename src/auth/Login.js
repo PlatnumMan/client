@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { login } from "../actions/auth";
 import LoginForm from "../components/LoginForm";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,7 +19,9 @@ const Login = () => {
     try {
       const res = await login({ email, password });
       if (res.data) {
-        console.log("USER INFO", res.data);
+        window.localStorage.setItem("auth", JSON.stringify(res.data));
+        dispatch({ type: "LOGGED_IN_USER", payload: res.data });
+        navigate("/");
       }
     } catch (err) {
       console.log(err);
