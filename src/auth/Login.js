@@ -21,7 +21,7 @@ const Login = () => {
       if (res.data) {
         window.localStorage.setItem("auth", JSON.stringify(res.data));
         dispatch({ type: "LOGGED_IN_USER", payload: res.data });
-        navigate("/");
+        navigate("/dashboard");
       }
     } catch (err) {
       console.log(err);
