@@ -7,6 +7,7 @@ import Register from "./auth/Register";
 import TopNav from "./components/TopNav";
 import PrivateRoute from "./components/PrivateRoute";
 import Dashboard from "./user/Dashboard";
+import DashboardSeller from "./user/DashboardSeller";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route exact path='/register' element={<Register />} />
         <Route element={<PrivateRoute />}>
           <Route exact path='/dashboard' element={<Dashboard />} />
+          <Route exact path='/dashboard/seller' element={<DashboardSeller />} />
         </Route>
       </Routes>
     </BrowserRouter>
