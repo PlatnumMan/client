@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import RegisterForm from "../components/RegisterForm";
 import toast from "react-hot-toast";
+import { register } from "../actions/auth";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -13,11 +14,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`http://localhost:8000/api/register`, {
-        name,
-        email,
-        password,
-      });
+      const res = await register({ name, email, password });
       toast.success("Signup Success!");
       navigate("/login");
     } catch (err) {
