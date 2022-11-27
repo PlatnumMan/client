@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useSelector, useDispatch } from "react-redux";
 import { getAccountStatus } from "../actions/stripe";
+import { updateUserInLocalStorage } from "../actions/auth";
 
 const StripeCallback = ({ navigate }) => {
   const { auth } = useSelector((state) => ({ ...state }));
@@ -14,7 +15,13 @@ const StripeCallback = ({ navigate }) => {
   const accountStatus = async () => {
     try {
       const res = await getAccountStatus(auth.token);
-      console.log("USER ACCOUNT STATUS", res);
+      updateUserInLocalStorage(res.data, () => {
+        dispatch({
+          type: "LOGGED_IN_USER",
+          payload: res.data,
+        });
+        window.location.href = "/dashboard/seller";
+      });
     } catch (err) {
       console.log(err);
     }

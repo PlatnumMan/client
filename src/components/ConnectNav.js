@@ -19,7 +19,7 @@ const ConnectNav = () => {
       {auth &&
         auth.user &&
         auth.user.stripe_seller &&
-        auth.user.seller.charges_enabled && (
+        auth.user.stripe_seller.charges_enabled && (
           <>
             <div>Pending Balance</div>
             <div>Payout Settings</div>
