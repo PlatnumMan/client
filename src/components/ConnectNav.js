@@ -1,12 +1,45 @@
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Card, Avatar } from "antd";
+import { Card, Avatar, Badge } from "antd";
+import { SettingOutlined } from "@ant-design/icons";
+import toast from "react-hot-toast";
 import moment from "moment";
+import {
+  getAccountBalance,
+  payoutSetting,
+  currencyFormatter,
+} from "../actions/stripe";
 
 const { Meta } = Card;
+const { Ribbon } = Badge;
 
 const ConnectNav = () => {
+  const [loading, setLoading] = useState(false);
+  const [balance, setBalance] = useState(0);
   const { auth } = useSelector((state) => ({ ...state }));
-  const { user } = auth;
+  const { user, token } = auth;
+
+  useEffect(() => {
+    getAccountBalance(auth.token).then((res) => {
+      console.log(res);
+      setBalance(res.data);
+    });
+  }, []);
+
+  const handlePayoutSettings = async () => {
+    setLoading(true);
+    try {
+      const res = await payoutSetting(token);
+      console.log("PAYOUT SET", res);
+      window.location.href = res.data.url;
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error("Something went wrong. Please try again");
+    }
+  };
+
   return (
     <div className='d-flex justify-content-around'>
       <Card>
@@ -21,8 +54,22 @@ const ConnectNav = () => {
         auth.user.stripe_seller &&
         auth.user.stripe_seller.charges_enabled && (
           <>
-            <div>Pending Balance</div>
-            <div>Payout Settings</div>
+            <Ribbon text='Avaliable' color='grey'>
+              <Card className='bg-light pt-1'>
+                {balance &&
+                  balance.pending &&
+                  balance.pending.map((bp, i) => (
+                    <span key={i} className='lead'>
+                      {currencyFormatter(bp)}
+                    </span>
+                  ))}
+              </Card>
+            </Ribbon>
+            <Ribbon text='Payouts' color='silver'>
+              <Card onClick={handlePayoutSettings} className='bg-light pointer'>
+                <SettingOutlined className='h5 pt-2' />
+              </Card>
+            </Ribbon>
           </>
         )}
     </div>
