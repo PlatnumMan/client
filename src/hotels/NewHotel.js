@@ -1,11 +1,9 @@
+import { Select } from "antd";
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import Autocomplete from "react-google-autocomplete";
-import { publicKeyMap } from "../environment";
+import { useSelector } from "react-redux";
 import { createHotel } from "../actions/hotel";
-import { DatePicker, Select } from "antd";
-import moment from "moment";
+import HotelCreateForm from "../components/forms/HotelCreateForm";
 
 const { Option } = Select;
 
@@ -62,96 +60,6 @@ const NewHotel = () => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  const hotelForm = () => (
-    <form onSubmit={handleSubmit}>
-      <div className='form-group'>
-        <label className='btn btn-outline-secondary btn-block m-2 w-25 text-left'>
-          Image
-          <input
-            type='file'
-            name='image'
-            onChange={handleImageChange}
-            accept='image/*'
-            hidden
-          />
-        </label>
-
-        <input
-          type='text'
-          name='title'
-          onChange={handleChange}
-          placeholder='Title'
-          className='form-control m-2'
-          value={title}
-        />
-
-        <textarea
-          name='content'
-          onChange={handleChange}
-          placeholder='Content'
-          className='form-control m-2'
-          value={content}
-        />
-
-        <Autocomplete
-          className='form-control m-2'
-          placeholder='Location'
-          defaultValue={location}
-          apiKey={publicKeyMap}
-          onPlaceSelected={(place) => {
-            setLocation(place.formatted_address);
-          }}
-          style={{ height: "50px" }}
-        />
-
-        <input
-          type='number'
-          name='price'
-          onChange={handleChange}
-          placeholder='Price'
-          className='form-control m-2'
-          value={price}
-        />
-
-        <Select
-          onChange={(value) => setValues({ ...values, bed: value })}
-          className='w-100 m-2'
-          size='large'
-          placeholder='Beds'
-        >
-          <Option key={1}>{1}</Option>
-          <Option key={2}>{2}</Option>
-          <Option key={3}>{3}</Option>
-          <Option key={4}>{4}</Option>
-        </Select>
-      </div>
-
-      <DatePicker
-        placeholder='From'
-        className='form-control m-2'
-        onChange={(date, dateString) =>
-          setValues({ ...values, from: dateString })
-        }
-        disabledDate={(current) =>
-          current && current.valueOf() < moment().subtract(1, "days")
-        }
-      />
-
-      <DatePicker
-        placeholder='To'
-        className='form-control m-2'
-        onChange={(date, dateString) =>
-          setValues({ ...values, to: dateString })
-        }
-        disabledDate={(current) =>
-          current && current.valueOf() < moment().subtract(1, "days")
-        }
-      />
-
-      <button className='btn btn-outline-primary m-2 w-100'>Save</button>
-    </form>
-  );
-
   return (
     <>
       <div className='container-fluid bg-secondary p-5 text-center'>
@@ -162,7 +70,15 @@ const NewHotel = () => {
         <div className='row'>
           <div className='col-md-10'>
             <br />
-            {hotelForm()}
+            <HotelCreateForm
+              values={values}
+              setValues={setValues}
+              handleSubmit={handleSubmit}
+              handleChange={handleChange}
+              handleImageChange={handleImageChange}
+              location={location}
+              setLocation={setLocation}
+            />
           </div>
           <div className='col-md-2'>
             <img
