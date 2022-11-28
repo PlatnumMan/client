@@ -1,26 +1,56 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import AlogliaPlaces from "algolia-places-react";
+import Autocomplete from "react-google-autocomplete";
+import { publicKeyMap } from "../environment";
+import { createHotel } from "../actions/hotel";
+import { DatePicker, Select } from "antd";
+import moment from "moment";
+
+const { Option } = Select;
 
 const NewHotel = () => {
+  const { auth } = useSelector((state) => ({ ...state }));
+  const { token } = auth;
+
   const [values, setValues] = useState({
     title: "",
     content: "",
-    location: "",
     image: "",
     price: "",
     from: "",
     to: "",
     bed: "",
   });
+
   const [preview, setPreview] = useState(
     "https://via.placeholder.com/100x100.png?text=PREVIEW"
   );
 
-  const { title, content, location, image, price, from, to, bed } = values;
+  const [location, setLocation] = useState("");
+  const { title, content, image, price, from, to, bed } = values;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    let hotelData = new FormData();
+    hotelData.append("title", title);
+    hotelData.append("content", content);
+    hotelData.append("location", location);
+    hotelData.append("price", price);
+    image && hotelData.append("image", image);
+    hotelData.append("from", from);
+    hotelData.append("to", to);
+    hotelData.append("bed", bed);
+
+    console.log([...hotelData]);
+
+    let res = await createHotel(token, hotelData);
+    console.log(res);
+    toast.success("New hotel created");
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   };
 
   const handleImageChange = async (e) => {
@@ -63,6 +93,17 @@ const NewHotel = () => {
           value={content}
         />
 
+        <Autocomplete
+          className='form-control m-2'
+          placeholder='Location'
+          defaultValue={location}
+          apiKey={publicKeyMap}
+          onPlaceSelected={(place) => {
+            setLocation(place.formatted_address);
+          }}
+          style={{ height: "50px" }}
+        />
+
         <input
           type='number'
           name='price'
@@ -72,15 +113,40 @@ const NewHotel = () => {
           value={price}
         />
 
-        <input
-          type='number'
-          name='bed'
-          onChange={handleChange}
-          placeholder='Number of beds'
-          className='form-control m-2'
-          value={bed}
-        />
+        <Select
+          onChange={(value) => setValues({ ...values, bed: value })}
+          className='w-100 m-2'
+          size='large'
+          placeholder='Beds'
+        >
+          <Option key={1}>{1}</Option>
+          <Option key={2}>{2}</Option>
+          <Option key={3}>{3}</Option>
+          <Option key={4}>{4}</Option>
+        </Select>
       </div>
+
+      <DatePicker
+        placeholder='From'
+        className='form-control m-2'
+        onChange={(date, dateString) =>
+          setValues({ ...values, from: dateString })
+        }
+        disabledDate={(current) =>
+          current && current.valueOf() < moment().subtract(1, "days")
+        }
+      />
+
+      <DatePicker
+        placeholder='To'
+        className='form-control m-2'
+        onChange={(date, dateString) =>
+          setValues({ ...values, to: dateString })
+        }
+        disabledDate={(current) =>
+          current && current.valueOf() < moment().subtract(1, "days")
+        }
+      />
 
       <button className='btn btn-outline-primary m-2 w-100'>Save</button>
     </form>
@@ -104,6 +170,7 @@ const NewHotel = () => {
               alt='image_preview'
               className='img img-fluid m-2'
             />
+            <pre>{JSON.stringify(location, null, 4)}</pre>
             Image <pre>{JSON.stringify(values, null, 4)}</pre>
           </div>
         </div>
