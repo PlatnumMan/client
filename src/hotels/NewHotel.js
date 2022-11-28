@@ -43,12 +43,17 @@ const NewHotel = () => {
 
     console.log([...hotelData]);
 
-    let res = await createHotel(token, hotelData);
-    console.log(res);
-    toast.success("New hotel created");
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+    try {
+      let res = await createHotel(token, hotelData);
+      console.log(res);
+      toast.success("New hotel created");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (err) {
+      console.log(err);
+      toast.error(err.response.data);
+    }
   };
 
   const handleImageChange = async (e) => {
