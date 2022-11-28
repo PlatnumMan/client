@@ -5,7 +5,12 @@ import { diffDays } from "../../actions/hotel";
 import { currencyFormatter } from "../../actions/stripe";
 import { apiUrl, defaultHolder } from "../../environment";
 
-const SmallCard = ({ h, handleDelete = (f) => f }) => {
+const SmallCard = ({
+  h,
+  handleDelete = (f) => f,
+  owner = false,
+  showViewMoreButton = true,
+}) => {
   const navigate = useNavigate();
 
   return (
@@ -52,18 +57,24 @@ const SmallCard = ({ h, handleDelete = (f) => f }) => {
               </p>
 
               <div className='d-flex justify-content-between h4'>
-                <button
-                  onClick={() => navigate(`/hotel/${h._id}`)}
-                  className='btn btn-primary'
-                >
-                  Show more
-                </button>
-                <Link to={`/hotel/edit/${h._id}`}>
-                  <EditOutlined className='text-warning' />
-                </Link>
-                <Link onClick={() => handleDelete(h._id)}>
-                  <DeleteOutlined className='text-danger' />
-                </Link>
+                {showViewMoreButton && (
+                  <button
+                    onClick={() => navigate(`/hotel/${h._id}`)}
+                    className='btn btn-primary'
+                  >
+                    Show more
+                  </button>
+                )}
+                {owner && (
+                  <>
+                    <Link to={`/hotel/edit/${h._id}`}>
+                      <EditOutlined className='text-warning' />
+                    </Link>
+                    <Link onClick={() => handleDelete(h._id)}>
+                      <DeleteOutlined className='text-danger' />
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>

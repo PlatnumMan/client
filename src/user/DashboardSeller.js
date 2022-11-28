@@ -1,15 +1,27 @@
 import { Link } from "react-router-dom";
 import DashboardNav from "../components/DashboardNav";
 import ConnectNav from "../components/ConnectNav";
+import SmallCard from "../components/cards/SmallCard";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { HomeOutlined } from "@ant-design/icons";
 import { createConnectAccount } from "../actions/stripe";
-import { useState } from "react";
+import { sellerHotels } from "../actions/hotel";
+import { useState, useEffect } from "react";
 
 const DashboardSeller = () => {
   const { auth } = useSelector((state) => ({ ...state }));
   const [loading, setLoading] = useState(false);
+  const [hotels, setHotels] = useState("");
+
+  useEffect(() => {
+    const loadSellersHotels = async () => {
+      let res = await sellerHotels(auth.token);
+      setHotels(res.data);
+    };
+
+    loadSellersHotels();
+  }, []);
 
   const handleClick = async () => {
     setLoading(true);
@@ -23,6 +35,8 @@ const DashboardSeller = () => {
     }
   };
 
+  let dataArr = Array.from(hotels);
+
   const connected = () => (
     <div className='container-fluid'>
       <div className='row'>
@@ -34,6 +48,17 @@ const DashboardSeller = () => {
             + Add New
           </Link>
         </div>
+      </div>
+
+      <div className='row'>
+        {dataArr.map((h) => (
+          <SmallCard
+            key={h._id}
+            h={h}
+            showViewMoreButton={false}
+            owner={true}
+          />
+        ))}
       </div>
     </div>
   );
