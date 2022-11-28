@@ -1,8 +1,14 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap");
+
+* {
+  font-family: "Poppins", sans-serif;
+}
+
 .pointer {
   cursor: pointer;
 }
 
 .active {
-  background-color: #3498DB !important;
+  background-color: #3498db !important;
   color: white !important;
 }
