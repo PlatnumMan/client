@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { DatePicker, Select } from "antd";
 import toast from "react-hot-toast";
 import Autocomplete from "react-google-autocomplete";
-import { read } from "../actions/hotel";
+import { read, updateHotel } from "../actions/hotel";
 import { apiUrl } from "../environment";
 import HotelEditForm from "../components/forms/HotelEditForm";
 
@@ -16,17 +16,17 @@ const EditHotel = () => {
   const [values, setValues] = useState({
     title: "",
     content: "",
-    image: "",
     price: "",
     from: "",
     to: "",
     bed: "",
   });
 
+  const [image, setImage] = useState("");
   const [preview, setPreview] = useState(
     "https://via.placeholder.com/100x100.png?text=PREVIEW"
   );
-  const { title, content, location, image, price, from, to, bed } = values;
+  const { title, content, location, price, from, to, bed } = values;
 
   const params = useParams();
 
@@ -34,8 +34,8 @@ const EditHotel = () => {
     loadSellersHotel();
   }, []);
 
+  const { hotelId } = params;
   const loadSellersHotel = async () => {
-    const { hotelId } = params;
     let res = await read(hotelId);
     setValues({ ...values, ...res.data });
     setPreview(`${apiUrl}/hotel/image/${res.data._id}`);
@@ -43,14 +43,39 @@ const EditHotel = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    let hotelData = new FormData();
+    hotelData.append("title", title);
+    hotelData.append("content", content);
+    hotelData.append("location", location);
+    hotelData.append("price", price);
+    image && hotelData.append("image", image);
+    hotelData.append("from", from);
+    hotelData.append("to", to);
+    hotelData.append("bed", bed);
+
+    console.log([...hotelData]);
+
+    try {
+      let res = await updateHotel(token, hotelData, hotelId);
+      console.log(res);
+      toast.success(`"${res.data.title}" updated`);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (err) {
+      console.log(err);
+      toast.error(err.response.data);
+    }
   };
+
   const handleChange = async (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
   const handleImageChange = async (e) => {
     e.preventDefault();
     setPreview(URL.createObjectURL(e.target.files[0]));
-    setValues({ ...values, image: e.target.files[0] });
+    setImage(e.target.files[0]);
   };
 
   return (
