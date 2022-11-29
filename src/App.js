@@ -9,6 +9,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Dashboard from "./user/Dashboard";
 import DashboardSeller from "./user/DashboardSeller";
 import NewHotel from "./hotels/NewHotel";
+import EditHotel from "./hotels/EditHotel";
 import StripeCallback from "./stripe/StripeCallback";
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route exact path='/dashboard/seller' element={<DashboardSeller />} />
           <Route exact path='/hotels/new' element={<NewHotel />} />
           <Route exact path='/stripe/callback' element={<StripeCallback />} />
+          <Route exact path='/hotel/edit/:hotelId' element={<EditHotel />} />
         </Route>
       </Routes>
     </BrowserRouter>

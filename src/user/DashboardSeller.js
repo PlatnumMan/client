@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { HomeOutlined } from "@ant-design/icons";
 import { createConnectAccount } from "../actions/stripe";
-import { sellerHotels } from "../actions/hotel";
+import { deleteHotel, sellerHotels } from "../actions/hotel";
 import { useState, useEffect } from "react";
 
 const DashboardSeller = () => {
@@ -15,13 +15,13 @@ const DashboardSeller = () => {
   const [hotels, setHotels] = useState("");
 
   useEffect(() => {
-    const loadSellersHotels = async () => {
-      let res = await sellerHotels(auth.token);
-      setHotels(res.data);
-    };
-
     loadSellersHotels();
   }, []);
+
+  const loadSellersHotels = async () => {
+    let res = await sellerHotels(auth.token);
+    setHotels(res.data);
+  };
 
   const handleClick = async () => {
     setLoading(true);
@@ -36,6 +36,14 @@ const DashboardSeller = () => {
   };
 
   let dataArr = Array.from(hotels);
+
+  const handleDelete = async (hotelId) => {
+    if (!window.confirm("Are you sure you want to delete")) return;
+    deleteHotel(auth.token, hotelId).then((res) => {
+      toast.success("Hotel deleted");
+      loadSellersHotels();
+    });
+  };
 
   const connected = () => (
     <div className='container-fluid'>
@@ -57,6 +65,7 @@ const DashboardSeller = () => {
             h={h}
             showViewMoreButton={false}
             owner={true}
+            handleDelete={handleDelete}
           />
         ))}
       </div>

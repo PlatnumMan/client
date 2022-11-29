@@ -24,3 +24,13 @@ export const sellerHotels = async (token) =>
       Authorization: `Bearer ${token}`,
     },
   });
+
+export const deleteHotel = async (token, hotelId) =>
+  await axios.delete(`${apiUrl}/delete-hotel/${hotelId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+export const read = async (hotelId) =>
+  await axios.get(`${apiUrl}/hotel/${hotelId}`);
