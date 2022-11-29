@@ -11,6 +11,7 @@ import DashboardSeller from "./user/DashboardSeller";
 import NewHotel from "./hotels/NewHotel";
 import EditHotel from "./hotels/EditHotel";
 import StripeCallback from "./stripe/StripeCallback";
+import ViewHotel from "./hotels/ViewHotel";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route exact path='/' element={<Home />} />
         <Route exact path='/login' element={<Login />} />
         <Route exact path='/register' element={<Register />} />
+        <Route exact path='/hotel/:hotelId' element={<ViewHotel />} />
         <Route element={<PrivateRoute />}>
           <Route exact path='/dashboard' element={<Dashboard />} />
           <Route exact path='/dashboard/seller' element={<DashboardSeller />} />
