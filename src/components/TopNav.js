@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 const TopNav = () => {
+  const active = window.location.pathname;
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -15,13 +17,16 @@ const TopNav = () => {
   };
 
   return (
-    <div className='nav bg-light d-flex justify-content-between'>
-      <Link className='nav-link' to={`/`}>
+    <div className='navbar navbar-expand-sm navbar-light bg-light'>
+      <Link className={`nav-link ${active === "/" && "active"}`} to={`/`}>
         Home
       </Link>
 
       {auth !== null && (
-        <Link className='nav-link' to={`/dashboard`}>
+        <Link
+          className={`nav-link ${active === "/dashboard" && "active"}`}
+          to={`/dashboard`}
+        >
           Dashboard
         </Link>
       )}
@@ -35,10 +40,16 @@ const TopNav = () => {
       {auth === null && (
         <>
           {" "}
-          <Link className='nav-link' to={`/login`}>
+          <Link
+            className={`nav-link ${active === "/login" && "active"}`}
+            to={`/login`}
+          >
             Login
           </Link>
-          <Link className='nav-link' to={`/register`}>
+          <Link
+            className={`nav-link ${active === "/register" && "active"}`}
+            to={`/register`}
+          >
             Register
           </Link>
         </>

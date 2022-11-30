@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { read, diffDays } from "../actions/hotel";
 import { apiUrl } from "../environment";
 import moment from "moment";
+import { useSelector } from "react-redux";
 
 const ViewHotel = () => {
   const params = useParams();
+  const navigate = useNavigate();
 
   const [hotel, setHotel] = useState({});
-  const [image, setImage] = useState({});
+  const [image, setImage] = useState("");
+
+  const { auth } = useSelector((state) => ({ ...state }));
 
   useEffect(() => {
     loadSellersHotel();
@@ -19,6 +23,13 @@ const ViewHotel = () => {
     let res = await read(hotelId);
     setHotel(res.data);
     setImage(`${apiUrl}/hotel/image/${res.data._id}`);
+  };
+
+  const handleClick = async (e) => {
+    e.preventDefault();
+    if (!auth) navigate("/login");
+    // TODO: handle click 
+    console.log("get session data");
   };
 
   return (
@@ -55,8 +66,11 @@ const ViewHotel = () => {
             <p>{hotel.location}</p>
             <i>Posed by {hotel.postedBy && hotel.postedBy.name}</i>
             <br />
-            <button className='btn btn-block btn-lg btn-primary mt-3'>
-              Book Now
+            <button
+              onClick={handleClick}
+              className='btn btn-block btn-lg btn-primary mt-3'
+            >
+              {auth && auth.token ? "Book Now" : "Login to Book"}
             </button>
           </div>
         </div>
